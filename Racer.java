@@ -5,6 +5,7 @@ import java.lang.Math;
 import javax.swing.*;
 import java.awt.*;
 
+
 class RacerStart
 {
     private javax.swing.Timer timer;
@@ -23,6 +24,9 @@ class RacerStart
     void LoadAssets()
     {
         ImgResources.put("Motor", new ImageIcon("Assets/motorcycle.png"));
+        ImgResources.put("MotorUp", new ImageIcon("Assets/motorcycleUp.png"));
+        ImgResources.put("MotorDown", new ImageIcon("Assets/motorcycleDown.png"));
+        ImgResources.put("MotorFlipped", new ImageIcon("Assets/motorcyclefliped.png"));
     }
 
     void ScreenDrive()
@@ -36,8 +40,8 @@ class RacerStart
         Motor.setSize(200,200);
         ScreenGUI.add(Motor);
 
-        ScreenEdgeDrive();
         PackGUI();
+        ScreenEdgeDrive();
 
     }
 
@@ -46,10 +50,13 @@ class RacerStart
         Dimension ScreenSize = ScreenGUI.getSize();
         int ScreenHeight = ScreenSize.height;
         int ScreenWidth = ScreenSize.width;
+        System.out.println(ScreenHeight);
+        System.out.println(ScreenWidth);
+        RacerPos[1] = ScreenHeight - 200;
 
-        timer = new javax.swing.Timer(50, e -> {
+        timer = new javax.swing.Timer(20, e -> {
 
-            updateRacerPosition();
+            updateRacerPosition(ScreenWidth, ScreenHeight);
             Motor.setBounds(RacerPos[0], RacerPos[1], 300, 300);
             Motor.revalidate();
         });
@@ -60,34 +67,42 @@ class RacerStart
     private void updateRacerPosition(int ScreenSizeX, int ScreenSizeY)
     {
         final int SizeXRacer = 300;
-        final int SizeyRacer = 300;
-        final int Speed = 5;
+        final int SizeYRacer = 300;
+        final int Speed = 10;
         int DirX = 0;
         int DirY = 0;
 
-        if (RacerPos[0] < ScreenSizeX - SizeXRacer)
+        if (RacerPos[0] < ScreenSizeX - SizeXRacer && RacerPos[1] >= ScreenSizeY - SizeYRacer)
         {
+            Motor.setIcon(ImgResources.get("Motor"));
             DirX = 1;
         }
-        else if (RacerPos[1] > ScreenSizeY - SizeXRacer)
+        else if (RacerPos[1] > 0 && RacerPos[0] >= ScreenSizeX - SizeXRacer)
         {
+            Motor.setIcon(ImgResources.get("MotorUp"));
             DirY = -1;
         }
         else if (RacerPos[0] > 0)
         {
+            Motor.setIcon(ImgResources.get("MotorFlipped"));
             DirX = -1;
         }
         else if (RacerPos[1] < ScreenSizeY - SizeXRacer)
         {
-            
+            Motor.setIcon(ImgResources.get("MotorDown"));
+            DirY = 1;
         }
+
+
+
+        RacerPos[0] += Speed * DirX;
+        RacerPos[1] += Speed * DirY;
     }
     
     private void PackGUI()
     {
         ScreenGUI.setUndecorated(true);
         ScreenGUI.setBackground(new Color(1.0f,1.0f,1.0f,0f));
-        ScreenGUI.pack();
         ScreenGUI.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ScreenGUI.setVisible(true);
     }
