@@ -69,7 +69,6 @@ class MotorRacer
             {
                 this.Finished = true;
             }
-
         }
         else if (this.PosY > 0 && this.PosX >= this.ScreenX - this.DifaultSize[0])
         {
